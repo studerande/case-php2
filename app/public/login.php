@@ -1,6 +1,4 @@
 <?php 
-
-    // se till att sessioner används på sidan
     session_start();
         
     include_once("_includes/database-connection.php");
@@ -68,7 +66,7 @@
             // när rätt lösenord är angivet är användaren känd
             // skapa sessionsvariabler som kan användas 
             $_SESSION['username'] = $user['username'];
-            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['user_id'] = $user['id'];
 
             // redirect to the referring page or a default page
             $redirect_url = isset($_SESSION['referer']) ? $_SESSION['referer'] : 'index.php';
@@ -79,35 +77,3 @@
         }
     }
 ?>
-
-<!-- HTML Form for Login -->
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
-
-    <?php
-    include "_includes/header.php";
-    ?>
-
-    <h1>Login</h1>
-    <form action="" method="post">
-        <label for="username">Username: </label>
-        <input type="text" name="username" id="username">
-
-        <label for="password">Password: </label>
-        <input type="password" name="password" id="password">
-        
-        <button type="submit">Login</button>
-    </form>
-
-    <?php 
-    // ... (remaining code)
-    include "_includes/footer.php";
-    ?>
-</body>
-</html>

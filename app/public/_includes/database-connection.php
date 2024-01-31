@@ -24,7 +24,7 @@ try {
 
 
 // funktion för att skapa tabellen pages 
-
+// funktion för att skapa tabellen pages 
 function setup_pages(PDO $pdo)
 {
     // Check if the image_path column exists before trying to create it
@@ -44,7 +44,7 @@ function setup_pages(PDO $pdo)
         content TEXT,
         date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
         image_path VARCHAR(255), 
-        FOREIGN KEY (user_id) REFERENCES user(user_id)
+        FOREIGN KEY (user_id) REFERENCES `user`(user_id)  -- Updated here
     );";
 
     $pdo->exec($sql);
@@ -59,6 +59,7 @@ function setup_pages(PDO $pdo)
 
     $pdo->exec($sqlImages);
 }
+
 
 
 

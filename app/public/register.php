@@ -1,5 +1,6 @@
 <?php
 
+
 // se till att sessioner används på sidan
 session_start();
 
