@@ -8,10 +8,10 @@
     ?> 
 </header>
 <nav>
-    <a href="/">Start</a> | 
+    <a href="/">Skapa din egna sida</a> | 
     <a href="login.php">Logga in</a> | 
     <a href="logout.php">Logga ut</a> | 
     <a href="register.php">Registrera</a> | 
-    <a href="pages.php">Skapa din egna sida</a> | 
+    <a href="view_pages.php">Kolla på andras sidor</a> | 
 </nav>
 <hr>

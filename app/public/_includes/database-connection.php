@@ -24,7 +24,7 @@ try {
 
 
 // funktion för att skapa tabellen pages 
-// funktion för att skapa tabellen pages 
+
 function setup_pages(PDO $pdo)
 {
     // Check if the image_path column exists before trying to create it

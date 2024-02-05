@@ -54,3 +54,7 @@ include_once("_includes/global-functions.php");
 <!-- ska fixa så att alla sidor som finns syns i navbaren -->
 <!-- ska göra så att man se från vilken tabel det är från -->
 
+<!-- måste göra att man kan ladd upp flera bilder  -->
+<!-- att bilderna hamnar i image tabelen  -->
+<!-- länka image tabel till pages tabellen det börjar med j  -->
+<!-- är man inte inloggad kan man kolla på andra sidor -->

@@ -7,40 +7,53 @@ session_start();
 include_once "_includes/database-connection.php";
 include_once "_includes/global-functions.php";
 
-// Set the correct timezone
+// if (!isset($_SESSION['user_id'])) {
+//     // Redirect to the login page or display an error message
+//     header("Location: login.php");
+//     exit();
+// }
+
+if(!isset($_SESSION['user_id'])){
+    
+    header("Location: login.php");
+
+    exit();
+}
+
 date_default_timezone_set("Europe/Stockholm");
 
-// Setup tables if not exists
 setup_pages($pdo);
 setup_user($pdo);
 setup_images($pdo);
 
-// Initialize variables
+
 $page_name = "";
 
-// Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $page_name = trim($_POST['page_name']);
     $content = $_POST['content'];
     $date_created = date('Y-m-d H:i:s');
 
-    // File upload handling
-    $image_path = "";  // Variable to store the path of the uploaded image
+    $image_paths = [];  
 
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-        $upload_dir = "uploads/";  // Specify the directory where you want to store uploaded images
-        $uploaded_file = $upload_dir . basename($_FILES['image']['name']);
+    for ($i = 0; $i < 5; $i++) {
+        $fileInputName = "image{$i}";
 
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploaded_file)) {
-            $image_path = $uploaded_file;
-        } else {
-            echo "Error uploading image.";
-            // Handle the error accordingly
+        if (isset($_FILES[$fileInputName]) && $_FILES[$fileInputName]['error'] === 0) {
+            $upload_dir = "uploads/";  
+            $uploaded_file = $upload_dir . basename($_FILES[$fileInputName]['name']);
+
+            if (move_uploaded_file($_FILES[$fileInputName]['tmp_name'], $uploaded_file)) {
+                $image_paths[] = $uploaded_file; 
+            } else {
+                echo "Error uploading image.";
+               
+            }
         }
     }
 
     if (strlen($page_name) >= 2) {
-        // Save to the database
+      
         $sql = "INSERT INTO pages (title, user_id, content, date_created, image_path)
                 VALUES (:title, :user_id, :content, :date_created, :image_path)";
 
@@ -50,10 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $stmt->bindParam(':user_id', $_SESSION['user_id']);
             $stmt->bindParam(':content', $content);
             $stmt->bindParam(':date_created', $date_created);
+
+            $image_path = implode(',', $image_paths);
             $stmt->bindParam(':image_path', $image_path);
+
             $stmt->execute();
 
-            // Redirect to the view_page.php with the newly created page's ID
             $newPageId = $pdo->lastInsertId();
             header("Location: view_pages.php?id=$newPageId");
 
@@ -64,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     }
 }
 
-// Fetch data from the database
 $sql = "SELECT pages.*, `user`.username FROM pages JOIN `user` ON pages.user_id = `user`.id";
 $result = $pdo->prepare($sql);
 $result->execute();
@@ -91,8 +105,8 @@ $rows = $result->fetchAll(PDO::FETCH_ASSOC);
         <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data">
 
             <p>
-                <label for="page_name">Sidan namn</label>
-                <input type="text" name="page_name" id="page_name" required minlength="1" maxlength="25">
+                <label for="page_name">Sidan namn minst två tecken</label>
+                <input type="text" name="page_name" id="page_name" maxlength="25">
             </p>
 
             <p>
@@ -100,10 +114,12 @@ $rows = $result->fetchAll(PDO::FETCH_ASSOC);
                 <textarea name="content" id="content" cols="30" rows="10"></textarea>
             </p>
 
-            <p>
-                <label for="image">Lägg upp en bild</label>
-                <input type="file" name="image" id="image">
-            </p>
+            <?php for ($i = 0; $i < 5; $i++) : ?>
+                <p>
+                    <label for="image<?= $i ?>">Lägg upp bild <?= $i + 1 ?></label>
+                    <input type="file" name="image<?= $i ?>" id="image<?= $i ?>">
+                </p>
+            <?php endfor; ?>
     
             <p>
                 <input type="submit" value="Save" class="button">

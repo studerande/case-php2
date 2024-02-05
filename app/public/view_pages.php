@@ -13,10 +13,9 @@ $result = $pdo->prepare($sql);
 $result->execute();
 $rows = $result->fetchAll(PDO::FETCH_ASSOC);
 
-// Get page ID from the URL parameter
-$pageId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$pageId = isset($_GET['id']) ? (int)$_GET['id'] : ($rows[0]['id'] ?? 0); // Set default value to the first page ID
 
-// Fetch page data from the database
+
 $sql = "SELECT * FROM pages WHERE id = :pageId";
 $stmt = $pdo->prepare($sql);
 $stmt->bindParam(':pageId', $pageId, PDO::PARAM_INT);
@@ -24,12 +23,11 @@ $stmt->execute();
 $pageData = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$pageData) {
-    // Handle case where the page is not found
+  
     echo "Page not found";
     exit;
 }
 
-// Display the page content
 ?>
 
 <!DOCTYPE html>
@@ -51,20 +49,31 @@ if (!$pageData) {
     <p><?php echo nl2br(htmlspecialchars($pageData['content'])); ?></p>
     <img src="<?php echo htmlspecialchars($pageData['image_path']); ?>" alt="Page Image">
 
-    <!-- Your side navigation bar code goes here -->
-<!-- Navigation Bar -->
 <div class="navbar">
     <h4>All Pages</h4>
     <ul>
     <?php
-var_dump($rows);  // Add this line for debugging
+
 foreach ($rows as $row) : ?>
    <li>
-       <a href="view_page.php?id=<?= $row['id'] ?>">
+       <a href="view_pages.php?id=<?= $row['id'] ?>">
            <strong><?= $row['title'] ?></strong><br>
            <?= $row['content'] ?><br>
            Created at: <?= $row['date_created'] ?><br>
            Published by: <?= $row['username'] ?>
+
+
+           <?php if(isset($_SESSION['user_id'])) : ?>
+
+            <form action="deletePage.php" method="post" style="display: inline;">
+        
+            <input type="hidden" name="page_id" value=" <?= $row['id'] ?>" >
+            <button type="submit" >delete</button>
+        </form>
+
+        <?php endif; ?>
+           
+           ?>
        </a>
    </li>
 <?php endforeach; ?>
