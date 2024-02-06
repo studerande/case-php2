@@ -1,11 +1,11 @@
 <header>
-    Ett sidhuvud...
+    inloggad av 
 
     <?= isset($_SESSION['username']) ? $_SESSION['username'] : ""; ?>
 
-    <?php 
+    <!-- <?php 
     print_r2($_SESSION);
-    ?> 
+    ?>  -->
 </header>
 <nav>
     <a href="/">Skapa din egna sida</a> | 

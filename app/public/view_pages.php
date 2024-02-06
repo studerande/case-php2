@@ -13,7 +13,7 @@ $result = $pdo->prepare($sql);
 $result->execute();
 $rows = $result->fetchAll(PDO::FETCH_ASSOC);
 
-$pageId = isset($_GET['id']) ? (int)$_GET['id'] : ($rows[0]['id'] ?? 0); // Set default value to the first page ID
+$pageId = isset($_GET['id']) ? (int)$_GET['id'] : ($rows[0]['id'] ?? 0); 
 
 
 $sql = "SELECT * FROM pages WHERE id = :pageId";
@@ -23,8 +23,8 @@ $stmt->execute();
 $pageData = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$pageData) {
-  
-    echo "Page not found";
+    include "_includes/header.php";
+    echo "Det finns inga färdiga sidor att visa. Skapa först en sida sedan hamnar den här";
     exit;
 }
 
@@ -49,45 +49,54 @@ if (!$pageData) {
     <p><?php echo nl2br(htmlspecialchars($pageData['content'])); ?></p>
     <img src="<?php echo htmlspecialchars($pageData['image_path']); ?>" alt="Page Image">
 
-<div class="navbar">
-    <h4>All Pages</h4>
-    <ul>
+    <div class="navbar">
+        <h4>All Pages</h4>
+        <ul>
+            <?php
+
+            foreach ($rows as $row) : ?>
+                <li>
+                    <a href="view_pages.php?id=<?= $row['id'] ?>">
+                        <strong><?= $row['title'] ?></strong><br>
+                        <?= $row['content'] ?><br>
+                        Created at: <?= $row['date_created'] ?><br>
+                        Published by: <?= $row['username'] ?>
+
+
+                        <?php if (isset($_SESSION['user_id'])) : ?>
+
+                            <form action="deletePage.php" method="post" style="display: inline;">
+
+                                <input type="hidden" name="page_id" value=" <?= $row['id'] ?>">
+                                <button type="submit">delete</button>
+                            </form>
+
+                              <!-- Edit button -->
+                            <form action="edit_page.php" method="get" style="display: inline;" >
+                        
+                            <input type="hidden" name="id" value="<?= $row['id'] ?>" >
+                            <button type="submit" >Redigera sida</button>
+                        
+                        </form>
+
+                        <?php endif; ?>
+
+                        
+                    </a>
+                </li>
+            <?php endforeach; ?>
+
+        </ul>
+    </div>
+
+
     <?php
 
-foreach ($rows as $row) : ?>
-   <li>
-       <a href="view_pages.php?id=<?= $row['id'] ?>">
-           <strong><?= $row['title'] ?></strong><br>
-           <?= $row['content'] ?><br>
-           Created at: <?= $row['date_created'] ?><br>
-           Published by: <?= $row['username'] ?>
-
-
-           <?php if(isset($_SESSION['user_id'])) : ?>
-
-            <form action="deletePage.php" method="post" style="display: inline;">
-        
-            <input type="hidden" name="page_id" value=" <?= $row['id'] ?>" >
-            <button type="submit" >delete</button>
-        </form>
-
-        <?php endif; ?>
-           
-           ?>
-       </a>
-   </li>
-<?php endforeach; ?>
-
-    </ul>
-</div>
-
-    
-    <?php
-     
     include "_includes/footer.php";
 
 
 
     ?>
 </body>
+
 </html>
