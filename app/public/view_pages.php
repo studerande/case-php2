@@ -5,8 +5,11 @@ declare(strict_types=1);
 
 session_start();
 
-include_once "_includes/database-connection.php";
 include_once "_includes/global-functions.php";
+include_once "_models/Database.php";
+include_once "_models/Page.php";
+include_once "_models/User.php";
+include_once "_models/Image.php";
 
 $sql = "SELECT pages.*, `user`.username FROM pages JOIN `user` ON pages.user_id = `user`.id";
 $result = $pdo->prepare($sql);
@@ -47,7 +50,7 @@ if (!$pageData) {
     ?>
     <h1><?php echo htmlspecialchars($pageData['title']); ?></h1>
     <p><?php echo nl2br(htmlspecialchars($pageData['content'])); ?></p>
-    <img src="<?php echo htmlspecialchars($pageData['image_path']); ?>" alt="Page Image">
+    <img src="<?php echo htmlspecialchars($pageData['image_path']); ?>"  alt="Page Image">
 
     <div class="navbar">
         <h4>All Pages</h4>

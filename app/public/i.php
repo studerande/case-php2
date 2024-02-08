@@ -47,14 +47,14 @@ include_once("_includes/global-functions.php");
 
 <!-- fråga om hur man gör för att lada upp bilden, om man ska se vem som laddat up den i php admin -->
 <!-- måste det vara olika tabler av image -->
-<!-- måste fixa navbar -->
 <!--  fixa att man se sidorna även om man inte är inloggad -->
 <!-- fixa med att kunna redigera eller skapa ny sida -->
 
 <!-- ska fixa så att alla sidor som finns syns i navbaren -->
 <!-- ska göra så att man se från vilken tabel det är från -->
 
-<!-- måste göra att man kan ladd upp flera bilder  -->
 <!-- att bilderna hamnar i image tabelen  -->
 <!-- länka image tabel till pages tabellen det börjar med j  -->
 <!-- är man inte inloggad kan man kolla på andra sidor -->
+<!-- kolla vilka tabler som laddas up sedan insiera det till database -->
+<!-- börja med backen fungerar den så blir frontenden enklare -->

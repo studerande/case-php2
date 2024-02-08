@@ -4,85 +4,49 @@ declare(strict_types=1);
 
 session_start();
 
-include_once "_includes/database-connection.php";
 include_once "_includes/global-functions.php";
+include_once "_models/Database.php";
+include_once "_models/Page.php";
+include_once "_models/User.php";
+include_once "_models/Image.php";
 
-// if (!isset($_SESSION['user_id'])) {
-//     // Redirect to the login page or display an error message
-//     header("Location: login.php");
-//     exit();
-// }
+$page = new Page();
 
-if(!isset($_SESSION['user_id'])){
-    
-    header("Location: login.php");
-
-    exit();
-}
-
+var_dump($_SESSION['user_id']);
 date_default_timezone_set("Europe/Stockholm");
-
-setup_pages($pdo);
-setup_user($pdo);
-setup_images($pdo);
-
-
-$page_name = "";
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $page_name = trim($_POST['page_name']);
     $content = $_POST['content'];
     $date_created = date('Y-m-d H:i:s');
 
-    $image_paths = [];  
+    // Assuming the user is logged in and their user_id is stored in the session
+    $user_id = $_SESSION['user_id'];
 
-    for ($i = 0; $i < 5; $i++) {
-        $fileInputName = "image{$i}";
-
-        if (isset($_FILES[$fileInputName]) && $_FILES[$fileInputName]['error'] === 0) {
-            $upload_dir = "uploads/";  
-            $uploaded_file = $upload_dir . basename($_FILES[$fileInputName]['name']);
-
-            if (move_uploaded_file($_FILES[$fileInputName]['tmp_name'], $uploaded_file)) {
-                $image_paths[] = $uploaded_file; 
-            } else {
-                echo "Error uploading image.";
-               
-            }
+    // Handle file upload
+    $image_url = null;
+    if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $upload_dir = 'uploads/'; // Directory where images will be stored
+        $image_name = uniqid('image_') . '_' . $_FILES['image']['name']; // Generate a unique name for the image
+        $image_path = $upload_dir . $image_name;
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $image_path)) {
+            $image_url = $image_path;
+        } else {
+            echo "Failed to upload image.";
         }
     }
 
-    if (strlen($page_name) >= 2) {
-      
-        $sql = "INSERT INTO pages (title, user_id, content, date_created, image_path)
-                VALUES (:title, :user_id, :content, :date_created, :image_path)";
+    // Insert page data into the database
+    $page_id = $page->create($page_name, $content, $date_created, $user_id);
 
-        try {
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':title', $page_name);
-            $stmt->bindParam(':user_id', $_SESSION['user_id']);
-            $stmt->bindParam(':content', $content);
-            $stmt->bindParam(':date_created', $date_created);
-
-            $image_path = implode(',', $image_paths);
-            $stmt->bindParam(':image_path', $image_path);
-
-            $stmt->execute();
-
-            $newPageId = $pdo->lastInsertId();
-            header("Location: view_pages.php?id=$newPageId");
-
-            exit();
-        } catch (PDOException $error) {
-            echo "Error: " . $error->getMessage();
-        }
+    // Insert image data into the database if an image was uploaded and page_id is not null
+    if ($image_url && $page_id !== null) {
+        $image_model = new Image();
+        $image_model->create($image_url, $page_id); // Pass the page_id to the create method
+    } else {
+        echo "Failed to insert image data into the database. Page ID is null.";
     }
 }
-
-$sql = "SELECT pages.*, `user`.username FROM pages JOIN `user` ON pages.user_id = `user`.id";
-$result = $pdo->prepare($sql);
-$result->execute();
-$rows = $result->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -93,45 +57,35 @@ $rows = $result->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Create Your Own Page</title>
 </head>
 
 <body>
-    <?php
-    include "_includes/header.php";
-    ?>
-    <h1 class="Rubrik">Gör din egna sida</h1>
+    <?php include "_includes/header.php"; ?>
+    <h1 class="Rubrik">Create Your Own Page</h1>
     <div class="content">
         <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data">
-
             <p>
-                <label for="page_name">Sidan namn minst två tecken</label>
+                <label for="page_name">Page Name (at least two characters)</label>
                 <input type="text" name="page_name" id="page_name" maxlength="25">
             </p>
-
             <p>
-                <label for="content">Text</label>
+                <label for="content">Content</label>
                 <textarea name="content" id="content" cols="30" rows="10"></textarea>
             </p>
+            <!-- Add image upload fields here if needed -->
 
-            <?php for ($i = 0; $i < 5; $i++) : ?>
-                <p>
-                    <label for="image<?= $i ?>">Lägg upp bild <?= $i + 1 ?></label>
-                    <input type="file" name="image<?= $i ?>" id="image<?= $i ?>">
-                </p>
-            <?php endfor; ?>
-    
+            <p>
+                <label for="image">Lägg upp bild ></label>
+                <input type="file" name="image" id="image">
+            </p>
             <p>
                 <input type="submit" value="Save" class="button">
                 <input type="reset" value="Reset" class="button">
             </p>
-
         </form>
     </div>
-
-    <?php
-    include "_includes/footer.php";
-    ?>
+    <?php include "_includes/footer.php"; ?>
 </body>
 
 </html>

@@ -1,5 +1,6 @@
 <?php
 
+
 $servername = "mysql";
 $database = "db_case_php";
 $username = "db_user";
@@ -14,39 +15,10 @@ try {
     // set the PDO error mode to exception
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    echo "Connected successfully. ";
+    echo "<div class='absolute bottom-4 right-4 p-4 text-green-400 bg-green-100 inline-block rounded-md font-bold'  > Connected successfully. </div> ";
 } catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
 }
-
-// funktion för att skapa tabellen pages 
-
-function setup_pages(PDO $pdo)
-{
-    $checkColumn = $pdo->query("SHOW COLUMNS FROM pages LIKE 'image_path'");
-    
-    if ($checkColumn->rowCount() == 0) {
-        // Create the image_path column if it does not exist
-        $sqlAlter = "ALTER TABLE pages ADD COLUMN image_path VARCHAR(255)";
-        $pdo->exec($sqlAlter);
-    }
-
-    $sql = "CREATE TABLE IF NOT EXISTS pages (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        title VARCHAR(255) NOT NULL,
-        user_id INT NOT NULL,
-        content TEXT,
-        date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
-        image_path VARCHAR(255), 
-        FOREIGN KEY (user_id) REFERENCES `user`(user_id) 
-    );";
-
-    $pdo->exec($sql);
-
-    
-}
-
-
 
 
 
@@ -63,14 +35,3 @@ function setup_user($pdo)
     $pdo->exec($sql);
 }
 
-function setup_images($pdo)
-{
-    $sql = "CREATE TABLE IF NOT EXISTS image (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        url VARCHAR(255) NOT NULL,
-        page_id INT,
-        FOREIGN KEY (page_id) REFERENCES pages(id)
-    )";
-
-    $pdo->exec($sql);
-}

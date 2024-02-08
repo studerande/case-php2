@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 session_start();
 
-include_once "_includes/database-connection.php";
 include_once "_includes/global-functions.php";
+include_once "_models/Database.php";
+include_once "_models/Page.php";
+include_once "_models/User.php";
+include_once "_models/Image.php";
 
 if (!isset($_SESSION['user_id'])) {
     

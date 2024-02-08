@@ -4,11 +4,14 @@
 // se till att sessioner används på sidan
 session_start();
 
-require_once "_includes/database-connection.php";
 include_once "_includes/global-functions.php";
+include_once "_models/Database.php";
+include_once "_models/Page.php";
+include_once "_models/User.php";
+include_once "_models/Image.php";
 
+$user = new User();
 
-setup_user($pdo);
 ?>
 
 <html lang="en">
@@ -18,6 +21,7 @@ setup_user($pdo);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
@@ -28,33 +32,31 @@ setup_user($pdo);
 
     <h1>Register</h1>
     <form action="" method="post">
-        <label for="username">Username: </label>
-        <input type="text" name="username" id="username">
-
-        <label for="password">Password: </label>
-        <input type="password" name="password" id="password">
-
-        <button type="submit">Register</button>
+        <p>
+            <label for="username">Användarnamn: </label>
+            <input type="text" name="username" id="username">
+        </p>
+        <p>
+            <label for="password">Lösenord: </label>
+            <input type="password" name="password" id="password">
+        </p>
+        <button type="submit">Registrera</button>
     </form>
 
     <?php
+
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // get user data from form
-        $form_username = $_POST['username'];
-        $form_hashed_password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $result = $user->register($username, $password);
 
-        // send to database
-        $sql_statement = "INSERT INTO `user` (`username`, `password`) VALUES ('$form_username', '$form_hashed_password')";
-
-        try {
-            $result = $pdo->query($sql_statement);
-            if ($result->rowCount() == 1) {
-                // if OK redirect to login page
-                header("location: login.php");
+        if ($result) {
+            if (is_numeric($result)) {
+                echo "Användare registrerad";
+            } else {
+                echo $result;
             }
-        } catch (PDOException $err) {
-            echo "There was a problem: " . $err->getMessage();
         }
     }
 

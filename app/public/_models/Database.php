@@ -10,7 +10,7 @@ class Database
 
         // credentials
         $servername = "mysql";
-        $database = "db_lecture";
+        $database = "db_case_php";
         $username = "db_user";
         $password = "db_password";
 
@@ -32,4 +32,6 @@ class Database
             echo "Connection failed: ";
         }
     }
+
+    
 }

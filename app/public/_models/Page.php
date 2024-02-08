@@ -1,17 +1,12 @@
-<?php class Page extends Database
+<?php
+class Page extends Database
 {
     public function __construct()
     {
         parent::__construct();
         $this->setup();
     }
-    
 
-    /**
-     * setup
-     *
-     * @return void
-     */
     public function setup()
     {
         $sql = "CREATE TABLE IF NOT EXISTS `page` (
@@ -29,23 +24,36 @@
         $stmt->execute();
     }
 
-
-    public function create($title, $content)
+    public function create($title, $content, $date_created, $user_id)
     {
         try {
-            $sql = "INSERT INTO `page` (title, content, user_id) VALUES (:title, :content, :user_id)";
+            $sql = "INSERT INTO `page` (title, content, date_created, user_id) VALUES (:title, :content, :date_created, :user_id)";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':title', $title, PDO::PARAM_STR);
             $stmt->bindParam(':content', $content, PDO::PARAM_STR);
-            $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+            $stmt->bindParam(':date_created', $date_created, PDO::PARAM_STR);
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
             $stmt->execute();
     
-            return $this->db->lastInsertId();    
+            return $this->db->lastInsertId(); // Return the ID of the newly inserted page
+        } catch (PDOException $err) {
+            echo "Felmeddelande: " . $err->getMessage();
+            return null; // Return null if an error occurs
+        }
+    }
+    
+
+    
+
+    public function select_all()
+    {
+        try {
+            $sql = "SELECT id, title FROM `page`";
+            $stmt = $this->db->query($sql);
+
+            return $stmt->fetchAll();
         } catch (PDOException $err) {
             echo "Felmeddelande: " . $err->getMessage();
         }
     }
-
-
 }
-
