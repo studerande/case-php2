@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data">
             <p>
                 <label for="page_name">Page Name (at least two characters)</label>
-                <input type="text" name="page_name" id="page_name" maxlength="25">
+                <input type="text" name="page_name" id="page_name" minlength="2" maxlength="25">
             </p>
             <p>
                 <label for="content">Content</label>

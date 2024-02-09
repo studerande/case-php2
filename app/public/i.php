@@ -58,3 +58,4 @@ include_once("_includes/global-functions.php");
 <!-- är man inte inloggad kan man kolla på andra sidor -->
 <!-- kolla vilka tabler som laddas up sedan insiera det till database -->
 <!-- börja med backen fungerar den så blir frontenden enklare -->
+<!-- göra så att man inte kan skapa en sida genom att bara trycka på spara -->

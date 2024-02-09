@@ -44,16 +44,38 @@ class Page extends Database
     
 
     
-
     public function select_all()
     {
         try {
-            $sql = "SELECT id, title FROM `page`";
+            $sql = "SELECT p.*, u.username,  i.url AS image_path
+                    FROM `page` p
+                    LEFT JOIN `image` i ON p.id = i.page_id
+                         LEFT JOIN `user` u ON p.user_id = u.id ";
             $stmt = $this->db->query($sql);
-
+    
             return $stmt->fetchAll();
         } catch (PDOException $err) {
             echo "Felmeddelande: " . $err->getMessage();
         }
     }
+    
+    public function delete($pageId, $userId)
+{
+    try {
+        $sql = "DELETE FROM `page` WHERE id = :pageId AND user_id = :userId";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':pageId', $pageId, PDO::PARAM_INT);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0; // Return true if a row was deleted, false otherwise
+    } catch (PDOException $err) {
+        echo "Felmeddelande: " . $err->getMessage();
+        return false; // Return false if an error occurs
+    }
+}
+
+    
+
+    
 }
