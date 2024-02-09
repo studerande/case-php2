@@ -23,28 +23,35 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     // Assuming the user is logged in and their user_id is stored in the session
     $user_id = $_SESSION['user_id'];
 
-    // Handle file upload
-    $image_url = null;
-    if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = 'uploads/'; // Directory where images will be stored
-        $image_name = uniqid('image_') . '_' . $_FILES['image']['name']; // Generate a unique name for the image
-        $image_path = $upload_dir . $image_name;
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $image_path)) {
-            $image_url = $image_path;
-        } else {
-            echo "Failed to upload image.";
-        }
-    }
-
-    // Insert page data into the database
-    $page_id = $page->create($page_name, $content, $date_created, $user_id);
-
-    // Insert image data into the database if an image was uploaded and page_id is not null
-    if ($image_url && $page_id !== null) {
-        $image_model = new Image();
-        $image_model->create($image_url, $page_id); // Pass the page_id to the create method
+    // Check if the page name, content, and image are provided
+    if (empty($page_name) || empty($content) || empty($_FILES['image']['name'])) {
+        echo "Please provide a page name, content, and upload an image.";
     } else {
-        echo "Failed to insert image data into the database. Page ID is null.";
+        // Handle file upload
+        $image_url = null;
+        if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $upload_dir = 'uploads/'; // Directory where images will be stored
+            $image_name = uniqid('image_') . '_' . $_FILES['image']['name']; // Generate a unique name for the image
+            $image_path = $upload_dir . $image_name;
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $image_path)) {
+                $image_url = $image_path;
+            } else {
+                echo "Failed to upload image.";
+            }
+        }
+
+        // Insert page data into the database only if page name, content, and image are provided
+        if (!empty($page_name) && !empty($content) && $image_url) {
+            $page_id = $page->create($page_name, $content, $date_created, $user_id);
+
+            // Insert image data into the database if an image was uploaded and page_id is not null
+            if ($page_id !== null) {
+                $image_model = new Image();
+                $image_model->create($image_url, $page_id); // Pass the page_id to the create method
+            } else {
+                echo "Failed to insert image data into the database. Page ID is null.";
+            }
+        }
     }
 }
 
@@ -64,20 +71,18 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     <?php include "_includes/header.php"; ?>
     <h1 class="Rubrik">Create Your Own Page</h1>
     <div class="content">
-        <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data">
+        <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <p>
                 <label for="page_name">Page Name (at least two characters)</label>
-                <input type="text" name="page_name" id="page_name" minlength="2" maxlength="25">
+                <input type="text" name="page_name" id="page_name" minlength="2" maxlength="25" required>
             </p>
             <p>
                 <label for="content">Content</label>
-                <textarea name="content" id="content" cols="30" rows="10"></textarea>
+                <textarea name="content" id="content" cols="30" rows="10" required></textarea>
             </p>
-            <!-- Add image upload fields here if needed -->
-
             <p>
-                <label for="image">Lägg upp bild ></label>
-                <input type="file" name="image" id="image">
+                <label for="image">Upload Image</label>
+                <input type="file" name="image" id="image" required>
             </p>
             <p>
                 <input type="submit" value="Save" class="button">
@@ -86,6 +91,19 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         </form>
     </div>
     <?php include "_includes/footer.php"; ?>
+
+    <script>
+        function validateForm() {
+            let pageTitle = document.getElementById("page_name").value;
+            let pageContent = document.getElementById("content").value;
+            let pageImage = document.getElementById("image").value;
+            if (pageTitle.trim() === "" || pageContent.trim() === "" || pageImage === "") {
+                alert("Please provide a page name, content, and upload an image.");
+                return false;
+            }
+            return true;
+        }
+    </script>
 </body>
 
 </html>
