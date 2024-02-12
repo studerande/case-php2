@@ -47,10 +47,7 @@ if ($pageData) {
     </html>
     
     <?php
-} else {
-   
-}
-
+} 
 // Display the list of all pages
 ?>
 <div class="navbar">

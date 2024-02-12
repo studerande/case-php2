@@ -74,8 +74,42 @@ class Page extends Database
         return false; // Return false if an error occurs
     }
 }
+public function findById($id)
+{
+    try {
+        $sql = "SELECT * FROM `page` WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $err) {
+        echo "Felmeddelande: " . $err->getMessage();
+        return null; // Return null if an error occurs
+    }
+}
+public function update($id, $title, $content)
+{
+    try {
+        // Prepare the SQL query
+        $sql = "UPDATE page SET title = :title, content = :content WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
 
-    
+        // Bind parameters
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+        $stmt->bindParam(':content', $content, PDO::PARAM_STR);
 
-    
+        // Execute the query
+        $stmt->execute();
+
+        // Return true if the update was successful
+        return true;
+    } catch (PDOException $e) {
+        // Handle errors gracefully
+        echo "Error updating page: " . $e->getMessage();
+        return false;
+    }
+}
+
+
 }

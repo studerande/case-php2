@@ -17,7 +17,7 @@ $user = new User();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <!-- <link rel="stylesheet" href="./css/style.css"> -->
 </head>
 
 <body>
@@ -28,7 +28,7 @@ $user = new User();
 
     ?>
 
-
+<h1>login</h1>
     <form action="" method="post">
         <label for="username">Username: </label>
         <input type="text" name="username" id="username">

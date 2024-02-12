@@ -36,4 +36,19 @@ class Image extends Database
             echo "Felmeddelande: " . $err->getMessage();
         }
     }
+
+    public function storeImagePath($url, $page_id)
+    {
+        try {
+            $sql = "INSERT INTO `image` (url, page_id) VALUES (:url, :page_id)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':url', $url, PDO::PARAM_STR);
+            $stmt->bindParam(':page_id', $page_id, PDO::PARAM_INT);
+            $stmt->execute();
+    
+            return $this->db->lastInsertId();
+        } catch (PDOException $err) {
+            echo "Felmeddelande: " . $err->getMessage();
+        }
+    }
 }
