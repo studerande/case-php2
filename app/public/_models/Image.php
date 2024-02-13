@@ -36,19 +36,29 @@ class Image extends Database
             echo "Felmeddelande: " . $err->getMessage();
         }
     }
-
-    public function storeImagePath($url, $page_id)
+    
+    
+      public function updateImagePath($id, $url, $page_id)
     {
         try {
-            $sql = "INSERT INTO `image` (url, page_id) VALUES (:url, :page_id)";
+            // Prepare the SQL query
+            $sql = "UPDATE image SET url = :url WHERE id = :id AND page_id = :page_id";
             $stmt = $this->db->prepare($sql);
+
+            // Bind parameters
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->bindParam(':url', $url, PDO::PARAM_STR);
             $stmt->bindParam(':page_id', $page_id, PDO::PARAM_INT);
+
+            // Execute the query
             $stmt->execute();
-    
-            return $this->db->lastInsertId();
-        } catch (PDOException $err) {
-            echo "Felmeddelande: " . $err->getMessage();
+
+            // Return true if the update was successful
+            return true;
+        } catch (PDOException $e) {
+            // Handle errors gracefully
+            echo "Error updating image: " . $e->getMessage();
+            return false;
         }
     }
 }

@@ -10,7 +10,6 @@ include_once "_models/User.php";
 include_once "_models/Image.php";
 
 if (!isset($_SESSION['user_id'])) {
-   
     header("Location: login.php");
     exit;
 }
@@ -22,42 +21,40 @@ $page = new Page();
 $pageData = $page->findById($pageId);
 
 if (!$pageData) {
-   
     echo "Page not found";
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
- 
     $title = trim($_POST['title']);
     $content = trim($_POST['content']);
 
-  // File upload handling
-$image_path = $pageData['image_path'];  // Initialize with current image path
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+      
+        $upload_dir = "uploads/";
+        $uploaded_file = $upload_dir . basename($_FILES['image']['name']);
 
-if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-    // Specify the directory where you want to store uploaded images
-    $upload_dir = "uploads/";
-    $uploaded_file = $upload_dir . basename($_FILES['image']['name']);
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploaded_file)) {
+          
+            $ImageModel = new Image();
+            $ImageModel->updateImagePath($pageId, $uploaded_file, $pageId);
 
-    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploaded_file)) {
-        // If image upload is successful, store the image path in the image table
-        $ImageModel = new Image();
-        $ImageModel->storeImagePath($uploaded_file, $pageId);
-
-        // Update $image_path if needed for display purposes
-        $image_path = $uploaded_file;
-    } else {
-        echo "Error uploading image.";
-        // Handle the error accordingly
+          
+        } else {
+            echo "Error uploading image.";
+         
+        }
     }
-}
+    
+    
+    var_dump($ImageModel);
+    var_dump($pageId);
+    var_dump($uploaded_file);
 
-$success = $page->update($pageId, $title, $content);
+    $success = $page->update($pageId, $title, $content);
 
     if ($success) {
-       
-        header("Location: view_pages.php?id=$pageId");
+        // header("Location: view_pages.php?id=$pageId");
         exit;
     } else {
         echo "Failed to update page.";
@@ -89,7 +86,6 @@ $success = $page->update($pageId, $title, $content);
         <textarea id="content" name="content" rows="4" cols="50"><?= htmlspecialchars($pageData['content']) ?></textarea><br><br>
 
         <label for="image">Image:</label><br>
-      
         <input type="file" id="image" name="image"><br><br>
 
         <input type="submit" value="Save">
