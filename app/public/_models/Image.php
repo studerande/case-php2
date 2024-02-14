@@ -37,28 +37,28 @@ class Image extends Database
         }
     }
     
-    
-      public function updateImagePath($id, $url, $page_id)
-    {
-        try {
-            // Prepare the SQL query
-            $sql = "UPDATE image SET url = :url WHERE id = :id AND page_id = :page_id";
-            $stmt = $this->db->prepare($sql);
+    public function updateImagePath($page_id, $url)
+{
+    try {
+        // Prepare the SQL query
+        $sql = "UPDATE image SET url = :url WHERE page_id = :page_id";
+        $stmt = $this->db->prepare($sql);
 
-            // Bind parameters
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->bindParam(':url', $url, PDO::PARAM_STR);
-            $stmt->bindParam(':page_id', $page_id, PDO::PARAM_INT);
+        // Bind parameters
+        $stmt->bindParam(':page_id', $page_id, PDO::PARAM_INT);
+        $stmt->bindParam(':url', $url, PDO::PARAM_STR);
 
-            // Execute the query
-            $stmt->execute();
+        // Execute the query
+        $stmt->execute();
 
-            // Return true if the update was successful
-            return true;
-        } catch (PDOException $e) {
-            // Handle errors gracefully
-            echo "Error updating image: " . $e->getMessage();
-            return false;
-        }
+        // Return true if the update was successful
+        return true;
+    } catch (PDOException $e) {
+        // Handle errors gracefully
+        echo "Error updating image: " . $e->getMessage();
+        return false;
     }
+}
+
+    
 }

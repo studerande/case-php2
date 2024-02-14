@@ -32,12 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
       
         $upload_dir = "uploads/";
-        $uploaded_file = $upload_dir . basename($_FILES['image']['name']);
+        $url = $upload_dir . basename($_FILES['image']['name']);
+        var_dump($url);
 
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploaded_file)) {
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $url)) {
           
             $ImageModel = new Image();
-            $ImageModel->updateImagePath($pageId, $uploaded_file, $pageId);
+            $ImageModel->updateImagePath($pageId, $url);
 
           
         } else {
@@ -47,9 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     }
     
     
-    var_dump($ImageModel);
-    var_dump($pageId);
-    var_dump($uploaded_file);
+    // var_dump($ImageModel);
+    // var_dump($pageId);
+    // var_dump($uploaded_file);
 
     $success = $page->update($pageId, $title, $content);
 
@@ -70,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Page</title>
+     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
