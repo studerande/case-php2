@@ -28,8 +28,7 @@ if ($pageId) {
 
 include "_includes/header.php";
 
-
-// om en specefik sida är vald
+// Om en specifik sida är vald
 if ($pageData) {
     ?>
     <!DOCTYPE html>
@@ -66,15 +65,15 @@ if ($pageData) {
                     Created at: <?= $row['date_created'] ?><br>
                     Published by: <?= $row['username'] ?>
 
-                    <?php if (isset($_SESSION['user_id'])) : ?>
+                    <?php if (isset($_SESSION['user_id']) && $row['user_id'] === $_SESSION['user_id']) : ?>
                         <form action="deletePage.php" method="post" style="display: inline;">
                             <input type="hidden" name="page_id" value="<?= $row['id'] ?>">
                             <button type="submit">delete</button>
                         </form>
                         <!-- Edit button -->
-                        <form action="edit_page.php" method="get" style="display: inline;" >
-                            <input type="hidden" name="id" value="<?= $row['id'] ?>" >
-                            <button type="submit" >Redigera sida</button>
+                        <form action="edit_page.php" method="get" style="display: inline;">
+                            <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                            <button type="submit">Redigera sida</button>
                         </form>
                     <?php endif; ?>
 
@@ -85,6 +84,7 @@ if ($pageData) {
 </div>
 
 <?php include "_includes/footer.php"; ?>
+
 
 
 <div class="bg-white">

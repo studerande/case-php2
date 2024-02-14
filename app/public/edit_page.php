@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $success = $page->update($pageId, $title, $content);
 
     if ($success) {
-        // header("Location: view_pages.php?id=$pageId");
+        header("Location: view_pages.php?id=$pageId");
         exit;
     } else {
         echo "Failed to update page.";

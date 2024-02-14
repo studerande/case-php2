@@ -1,0 +1,9 @@
+När du har klonat ner git repot följ dessa steg
+
+
+öppna två terminaler 
+
+en terminal för att köra npx tailwindcss -i ./input.css -o ./app/public/css/style.css --watch
+
+och en terminal för att köra detta komando docker-compose up
+
