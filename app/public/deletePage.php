@@ -10,6 +10,8 @@ include_once "_models/Page.php";
 include_once "_models/User.php";
 include_once "_models/Image.php";
 
+
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
