@@ -6,8 +6,7 @@ include_once "_models/Database.php";
 include_once "_models/User.php";
 
 $user = new User();
-$page = new Page();
-$image = new Image();
+
 
 ?>
 <html lang="en">

@@ -10,9 +10,7 @@ include_once "_models/Page.php";
 include_once "_models/User.php";
 include_once "_models/Image.php";
 
-$user = new User();
 $page = new Page();
-$image = new Image();
 
 // Select all pages
 $pages = $page->select_all();

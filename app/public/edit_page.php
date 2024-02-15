@@ -9,10 +9,6 @@ include_once "_models/Page.php";
 include_once "_models/User.php";
 include_once "_models/Image.php";
 
-$user = new User();
-$page = new Page();
-$image = new Image();
-
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
