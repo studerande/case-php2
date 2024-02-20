@@ -77,19 +77,19 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
 <body class="bg-blue-100">
     <?php include "_includes/header.php"; ?>
-    <h1 class="Rubrik text-3xl text-center mt-8">Create Your Own Page</h1>
-    <div class="content max-w-md mx-auto mt-8 p-8 bg-greay rounded-lg shadow-md">
+    <h1 class="Rubrik text-3xl text-center mt-8" >Create Your Own Page</h1>
+    <div class="content max-w-md mx-auto mt-8 p-8 bg-slate-600 rounded-lg shadow-md">
         <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <div class="mb-4">
-                <label for="page_name" class="block text-sm font-medium text-gray-700">Page Name (at least two characters)</label>
+                <label for="page_name" class="block text-sm font-medium text-white">Page Name (at least two characters)</label>
                 <input type="text" name="page_name" id="page_name" minlength="2" maxlength="25" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
             </div>
             <div class="mb-4">
-                <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
+                <label for="content" class="block text-sm font-medium text-white">Content</label>
                 <textarea name="content" id="content" cols="30" rows="10" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
             </div>
             <div class="mb-4">
-                <label for="image" class="block text-sm font-medium text-gray-700">Upload Image</label>
+                <label for="image" class="block text-sm font-medium text-white">Upload Image</label>
                 <input type="file" name="image" id="image" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
             </div>
             <div class="flex justify-between">
@@ -99,3 +99,5 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         </form>
     </div>
 </body>
+
+<!-- färgen på ingen fil har valts och om det bara är en sida som skapats -->

@@ -44,10 +44,14 @@ if ($pageData) {
 
     </head>
 
-    <body>
-        <h1><?php echo htmlspecialchars($pageData['title']); ?></h1>
-        <p><?php echo nl2br(htmlspecialchars($pageData['content'])); ?></p>
-        <img src="<?php echo htmlspecialchars($pageData['image_path']); ?>" alt="Page Image">
+    <body class="bg-blue-100">
+
+        <div class="container mx-auto p-10">
+            <img src="<?php echo htmlspecialchars($pageData['image_path']); ?>" alt="Page Image" class="max-w-full rounded-lg pb-10">
+            <h1 class="text-3xl font-bold mb-4"><?php echo htmlspecialchars($pageData['title']); ?></h1>
+            <p class="text-lg text-gray-700 leading-relaxed"><?php echo nl2br(htmlspecialchars($pageData['content'])); ?></p>
+        </div>
+
     </body>
 
     </html>
@@ -61,7 +65,8 @@ if ($pageData) {
     <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <div>
             <div class="navbar">
-                <h4>All Pages</h4>
+                <h2 class="text-2xl font-semibold ">All Pages</h2>
+                <br>
                 <ul class="flex gap-4 w-full ">
                     <?php foreach ($pages as $row) : ?>
                         <li class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
@@ -69,23 +74,25 @@ if ($pageData) {
                                 <div class="h-44 bg-center bg-cover w-full " style="background-image: url('<?php echo htmlspecialchars($row['image_path']) ?>');">
 
                                 </div>
-                                <div class="p-4" >
+                                <div class="p-4">
                                     <h2 class="text-2xl font-semibold "><?= $row['title'] ?></h2>
-                                    <div class="text-xs text-slate-600" >
-                                    Created <?= $row['date_created'] ?> by <?= $row['username'] ?>
+                                    <div class="text-xs text-slate-600">
+                                        Created <?= $row['date_created'] ?> by <?= $row['username'] ?>
                                     </div>
                                 </div>
+                                <!-- Edit button -->
+                                <form action="edit_page.php" method="get" style="display: inline;">
+                                    <input type="hidden" name="id" value="<?= $row['id'] ?>"><br>
+                                    <button type="submit" class="text-blue-500 hover:text-blue-700">Redigera sida</button>
+
+                                </form>
                                 <?php if (isset($_SESSION['user_id']) && $row['user_id'] === $_SESSION['user_id']) : ?>
                                     <form action="deletePage.php" method="post" style="display: inline;">
                                         <input type="hidden" name="page_id" value="<?= $row['id'] ?>">
-                                        <button type="submit">delete</button>
+                                        <br>
+                                        <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
                                     </form>
-                                    <!-- Edit button -->
-                                    <form action="edit_page.php" method="get" style="display: inline;">
-                                        <input type="hidden" name="id" value="<?= $row['id'] ?>">
-                                        <button type="submit">Redigera sida</button>
 
-                                    </form>
                                 <?php endif; ?>
 
 
