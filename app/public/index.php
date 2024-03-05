@@ -38,14 +38,26 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $image_url = null;
         if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $upload_dir = 'uploads/'; // Directory where images will be stored
-            $image_name = uniqid('image_') . '_' . $_FILES['image']['name']; // Generate a unique name for the image
+        
+            // Verify if the uploads directory exists, otherwise create it
+            if (!file_exists($upload_dir) && !is_dir($upload_dir)) {
+                mkdir($upload_dir, 0755, true);
+            }
+        
+            // Generate a unique name for the image
+            $image_name = uniqid('image_') . '_' . $_FILES['image']['name'];
             $image_path = $upload_dir . $image_name;
+        
+            // Try to move the uploaded file to the specified directory
             if (move_uploaded_file($_FILES['image']['tmp_name'], $image_path)) {
                 $image_url = $image_path;
             } else {
+                // If moving the file fails, log an error message
+                error_log("Failed to move uploaded file to: $image_path");
                 echo "Failed to upload image.";
             }
-        }
+        } 
+        
 
         // Insert page data into the database only if page name, content, and image are provided
         if (!empty($page_name) && !empty($content) && $image_url) {
